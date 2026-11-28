@@ -98,7 +98,6 @@ async function refreshData(silent) {
   if (S.refreshing || !S.token) return; S.refreshing = true; setSync('busy');
   try {
     const r = await api('bootstrap');
-<<<<<<< HEAD
     if (r.success) {
       // Bandingkan dengan data server terakhir: render ulang hanya bila memang berubah (hemat CPU & tidak mengganggu pengisian form)
       const sig = JSON.stringify(r.data), berubah = sig !== S.lastSig;
@@ -108,9 +107,6 @@ async function refreshData(silent) {
         if (editing()) S.dirty = true; else render();
       }
     }
-=======
-    if (r.success) { S.data = r.data; S.me = r.data.me; renderTop(); ls.set('cs_boot', JSON.stringify(r.data)); S.lastSync = Date.now(); setSync('ok'); refreshBadges(); syncBrand(r.data.brand); if (editing()) S.dirty = true; else render(); }
->>>>>>> 4c5fdc23abb79d55212ab2a90a65898616847883
     else if (r.code !== 'AUTH') { setSync('off'); if (!silent) toast(r.message, 'danger'); }
   } catch (e) { setSync('off'); if (!silent) toast('Tidak dapat terhubung ke server.', 'danger'); }
   finally { S.refreshing = false; }
@@ -389,11 +385,7 @@ ACT['login'] = async () => {
 };
 function loginOk(r) {
   if (!r.success) { toast(r.message, 'danger'); return; }
-<<<<<<< HEAD
   S.token = r.data.token; S.data = r.data.boot; S.me = r.data.me; S.lastSync = Date.now(); ls.set('cs_tok', S.token); S.lastSig = JSON.stringify(S.data); ls.set('cs_boot', S.lastSig); S.f = {}; S.q = {}; S.pg = {};
-=======
-  S.token = r.data.token; S.data = r.data.boot; S.me = r.data.me; S.lastSync = Date.now(); ls.set('cs_tok', S.token); ls.set('cs_boot', JSON.stringify(S.data)); S.f = {}; S.q = {}; S.pg = {};
->>>>>>> 4c5fdc23abb79d55212ab2a90a65898616847883
   syncBrand(S.data.brand); toast(r.message, 'success'); startApp();
 }
 function startApp() { hideBoot(); $('#login').classList.add('hidden'); $('#app').classList.remove('hidden'); renderSide(); renderTop(); go(defView()); }
@@ -410,7 +402,6 @@ document.addEventListener('keydown', e => {
   if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('.dz')) { e.preventDefault(); e.target.click(); }
 });
 document.addEventListener('visibilitychange', () => { if (!document.hidden && S.token && Date.now() - S.lastSync > 20000) refreshData(true); });
-<<<<<<< HEAD
 const AKTIF = { at: Date.now() };
 ['pointerdown', 'keydown', 'focus'].forEach(ev => document.addEventListener(ev, () => { AKTIF.at = Date.now(); }, { capture: true, passive: true }));
 setInterval(() => {
@@ -418,9 +409,6 @@ setInterval(() => {
   const aktif = Date.now() - AKTIF.at < 120000;
   if (Date.now() - S.lastSync > (aktif ? 60000 : 300000)) refreshData(true);
 }, 15000);
-=======
-setInterval(() => { if (!document.hidden && S.token && Date.now() - S.lastSync > 45000) refreshData(true); }, 15000);
->>>>>>> 4c5fdc23abb79d55212ab2a90a65898616847883
 window.addEventListener('online', () => S.token && refreshData(true));
 window.addEventListener('offline', () => setSync('off'));
 
@@ -937,7 +925,6 @@ ACT['u.delbulk'] = () => {
   }, 'Hapus Permanen', true);
 };
 ACT['u.export'] = () => unduhXlsx('Pengguna_' + slug(bn()), [{ nama: 'Pengguna', rows: [['Nama', 'NIM/NIP', 'Email', 'Peran', 'Prodi', 'Kelas', 'Angkatan', 'Status']].concat((D().users || []).map(u => [u.nama, u.nim_nip, u.email, u.role, u.prodi, u.kelas, u.angkatan, u.status_aktif])) }]);
-<<<<<<< HEAD
 ACT['u.import'] = () => modal({ title: 'Impor Pengguna dari CSV', cls: 'wide', body: `${note('Header yang dikenali: <b>Nama; NIM/NIP; Email; Peran; Prodi; Kelas; Angkatan; Status</b>. Pemisah boleh titik koma (;) atau koma (,). Peran: mahasiswa, dosen, atau admin. Maksimal 500 baris. Token dibuat otomatis untuk akun baru, dan setiap baris yang dilewati disertai alasannya.', '', 'info-circle')}<div class="mt"><input type="file" accept=".csv,.txt" class="inp" id="imp_f" data-change="impfile" aria-label="Berkas CSV"></div>${fld('Atau tempel isi CSV', `<textarea class="txa mono" id="imp_t" rows="8" placeholder="Nama;NIM/NIP;Email;Peran;Prodi;Kelas;Angkatan;Status
 Budi Santoso;2025CS001;budi@mhs.kampus.ac.id;mahasiswa;S1 TI;TI-1A;2025;Aktif"></textarea>`)}`, foot: btn('Batal', 'modal.close') + btn('Impor & Buat Token', 'u.import.ok', { c: 'btn-p', i: 'upload' }) });
 function parseCsv(text) {
@@ -976,13 +963,6 @@ function impHasilModal(d) {
   const tabelLewat = skip.length ? `<div class="lbl mt" style="margin:14px 0 8px">BARIS DILEWATI (${skip.length})</div><div style="max-height:260px;overflow:auto">${tbl([{ h: 'Baris', r: x => x.baris }, { h: 'Nama', r: x => E(x.nama) }, { h: 'Alasan', r: x => E(x.alasan) }], skip, { em: '' })}</div>` : '';
   modal({ title: 'Hasil Impor Pengguna', cls: 'wide', body: ring + tabelToken + tabelLewat, foot: (ok.length ? btn('Unduh CSV', 'tok.csv', { i: 'download' }) + btn('Cetak Kartu Login', 'tok.print', { i: 'printer' }) : '') + btn('Tutup', 'modal.close', { c: 'btn-p' }) });
 }
-=======
-ACT['u.import'] = () => modal({ title: 'Impor Pengguna dari CSV', cls: 'wide', body: `${note('Kolom: <b>nama, nim_nip, email, role, prodi, kelas, angkatan</b> (baris pertama = header; pemisah koma atau titik koma). Maksimal 500 baris. Token dibuat otomatis untuk setiap akun baru.', '', 'info-circle')}<div class="mt"><input type="file" accept=".csv,.txt" class="inp" id="imp_f" data-change="impfile" aria-label="Berkas CSV"></div>${fld('Atau tempel isi CSV', `<textarea class="txa mono" id="imp_t" rows="8" placeholder="nama,nim_nip,email,role,prodi,kelas,angkatan
-Budi,2025CS001,budi@mhs.kampus.ac.id,mahasiswa,S1 TI,TI-1A,2025"></textarea>`)}`, foot: btn('Batal', 'modal.close') + btn('Impor & Buat Token', 'u.import.ok', { c: 'btn-p', i: 'upload' }) });
-CHG.impfile = el => { const f = el.files[0]; if (!f) return; if (f.size > 1048576) { toast('Berkas CSV terlalu besar (maks 1 MB).', 'danger'); return; } const fr = new FileReader(); fr.onload = () => { $('#imp_t').value = String(fr.result); }; fr.readAsText(f); };
-function parseCsv(text) { const lines = String(text).split(String.fromCharCode(13)).join('').split(String.fromCharCode(10)).filter(l => l.trim()); if (lines.length < 2) return []; const del = (lines[0].match(/;/g) || []).length > (lines[0].match(/,/g) || []).length ? ';' : ','; const split = l => { const o = []; let c = '', q = false; for (let i = 0; i < l.length; i++) { const ch = l[i]; if (ch === '"') { if (q && l[i + 1] === '"') { c += '"'; i++; } else q = !q; } else if (ch === del && !q) { o.push(c); c = ''; } else c += ch; } o.push(c); return o.map(x => x.trim()); }; const h = split(lines[0]).map(x => lc(x).replace(/\s+/g, '_')); return lines.slice(1).map(l => { const v = split(l), o = {}; h.forEach((k, i) => o[k] = v[i] || ''); return o; }); }
-ACT['u.import.ok'] = async el => { const rows = parseCsv($('#imp_t').value); if (!rows.length) { toast('Data CSV kosong atau format salah.', 'warn'); return; } if (rows.length > 500) { toast('Maksimal 500 baris per impor.', 'warn'); return; } el.disabled = true; const r = await aksi('user.import', { rows }, { refresh: true }); if (r) { closeModal(); if (r.data.hasil.length) tokenModal(r.data.hasil, r.data.hasil.length + ' Pengguna Diimpor'); } else el.disabled = false; };
->>>>>>> 4c5fdc23abb79d55212ab2a90a65898616847883
 
 /* ---------- Mata Kuliah & Enrolment ---------- */
 V['a.matkul'] = () => {
@@ -1025,11 +1005,7 @@ V['a.laporan'] = () => {
   barChart('c_inst', mk.map(m => m.kode_mk), [{ label: 'Rata-rata nilai', data: rows.map(r => r[5] || 0) }, { label: 'Kehadiran %', data: rows.map(r => r[6] || 0) }], { min: 0, max: 100 });
   return `${phead({ tag: 'PAGE A-05', sync: 'GAS Trigger: backup harian 03:00 WIB', t: 'Laporan Institusi & Cadangan Data', s: 'Ekspor laporan akademik tingkat institusi, cadangan spreadsheet ke Google Drive, dan konfigurasi sistem.', a: btn('Ekspor Excel', 'inst.xlsx', { c: 'btn-t', i: 'file-earmark-excel' }) + btn('Cetak PDF', 'inst.print', { i: 'printer' }) + btn('Jalankan Backup Sekarang', 'backup', { c: 'btn-p', i: 'cloud-arrow-up' }) })}
   <div class="g g3"><div class="card">${cardH('Cadangan (Backup)')}<div class="kv"><span>Backup terakhir</span><b>${cfg.backupTerakhir ? tglJam(cfg.backupTerakhir) : 'Belum pernah'}</b></div><div class="kv"><span>Jadwal otomatis</span><b>Harian 03:00 WIB</b></div><div class="kv"><span>Retensi</span><b>14 salinan terakhir</b></div><button class="btn btn-p btn-b mt" style="margin-top:10px" data-act="backup">${icon('cloud-arrow-up')}Jalankan Backup Sekarang</button></div>
-<<<<<<< HEAD
   <div class="card">${cardH('Tautan Sistem')}${cfg.spreadsheetUrl ? '' : '<p class="sm mut">Buka Google Drive, lalu cari folder <b>Institut_Mahaputra_Akademik</b> untuk spreadsheet dan backup.</p>'}${cfg.spreadsheetUrl ? `<a class="note mb" href="${E(cfg.spreadsheetUrl)}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">${icon('table')}<div><b>Spreadsheet Database</b><div class="xs mut">Buka di Google Sheets</div></div></a><a class="note" href="${E(cfg.folderUrl)}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">${icon('folder2-open')}<div><b>Folder Drive Utama</b><div class="xs mut">Materi, tugas, dan backup</div></div></a>` : ''}<button class="btn btn-s btn-b mt" style="margin-top:10px" data-act="sinkron">${icon('arrow-repeat')}Bersihkan Cache & Muat Ulang</button></div>
-=======
-  <div class="card">${cardH('Tautan Sistem')}${cfg.spreadsheetUrl ? `<a class="note mb" href="${E(cfg.spreadsheetUrl)}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">${icon('table')}<div><b>Spreadsheet Database</b><div class="xs mut">Buka di Google Sheets</div></div></a><a class="note" href="${E(cfg.folderUrl)}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">${icon('folder2-open')}<div><b>Folder Drive Utama</b><div class="xs mut">Materi, tugas, dan backup</div></div></a>` : ''}<button class="btn btn-s btn-b mt" style="margin-top:10px" data-act="sinkron">${icon('arrow-repeat')}Bersihkan Cache & Muat Ulang</button></div>
->>>>>>> 4c5fdc23abb79d55212ab2a90a65898616847883
   <div class="card">${cardH('Login Google (opsional)', '', cfg.googleClientIdAda ? '<span class="chip c-ok">Aktif</span>' : '<span class="chip c-neu">Belum diatur</span>')}<p class="sm mut">Tempel OAuth Client ID untuk mengaktifkan tombol “Masuk dengan Google” bagi dosen & admin. Nilai disimpan di Script Properties dan tidak pernah ditampilkan penuh.</p>${cfg.googleClientIdAda ? `<div class="mono sub-box mt" style="margin-top:8px">${E(cfg.googleClientIdSamar)}</div>` : ''}<input class="inp mt" style="margin-top:8px" id="cfg_gid" placeholder="123-abc.apps.googleusercontent.com" autocomplete="off"><div class="row mt" style="margin-top:8px">${btn('Simpan', 'cfg.save', { c: 'btn-p', sm: 1 })}${cfg.googleClientIdAda ? btn('Hapus', 'cfg.del', { c: 'btn-d', sm: 1 }) : ''}</div></div></div>
   <div class="card mt">${cardH('Laporan Institusi per Mata Kuliah', 'Rata-rata nilai dan kehadiran seluruh kelas')}${mk.length ? '<div class="cv sm"><canvas id="c_inst"></canvas></div>' : ''}<div class="mt">${tbl(instRows()[0].map((h, i) => ({ h, r: r => i === 0 ? mkChip(r[0]) : E(r[i] === '' ? '–' : r[i]), cls: i > 2 ? 'tr' : '' })), rows, { em: 'Belum ada data.' })}</div></div>`;
 };
@@ -1114,11 +1090,7 @@ ACT['brand.save'] = async el => {
 (function init() {
   S.theme = ls.get('cs_theme') || (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); applyTheme();
   const tok = ls.get('cs_tok'); let boot = null; try { boot = JSON.parse(ls.get('cs_boot') || 'null'); } catch (e) { }
-<<<<<<< HEAD
   if (tok && boot && boot.me && boot.me.role) { S.token = tok; S.data = boot; S.me = boot.me; S.lastSig = ls.get('cs_boot') || ''; startApp(); setSync('busy'); refreshData(true); }
-=======
-  if (tok && boot && boot.me && boot.me.role) { S.token = tok; S.data = boot; S.me = boot.me; startApp(); setSync('busy'); refreshData(true); }
->>>>>>> 4c5fdc23abb79d55212ab2a90a65898616847883
   else renderLogin();
 })();
 
